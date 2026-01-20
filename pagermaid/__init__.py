@@ -14,6 +14,7 @@ from logging import (
     Formatter,
     FileHandler,
 )
+from logging.handlers import RotatingFileHandler
 from os import getcwd
 
 import pagermaid.update
@@ -50,8 +51,11 @@ root_logger.addHandler(logging_handler)
 pyro_logger = getLogger("pyrogram")
 pyro_logger.setLevel(INFO if Config.DEBUG else CRITICAL)
 pyro_logger.addHandler(logging_handler)
-file_handler = FileHandler(
-    filename="data/pagermaid.log.txt", mode="w", encoding="utf-8"
+file_handler = RotatingFileHandler(
+    filename="data/pagermaid.log.txt",
+    encoding="utf-8",
+    maxBytes=25 * 1024 * 1024,
+    backupCount=1
 )
 file_handler.setFormatter(Formatter(logging_format))
 root_logger.addHandler(file_handler)

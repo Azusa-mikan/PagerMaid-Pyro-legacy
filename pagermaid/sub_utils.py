@@ -1,6 +1,5 @@
 from typing import List
-
-from pagermaid.dependence import sqlite
+from pagermaid.single_utils import sqlite
 
 
 class Sub:

@@ -27,13 +27,13 @@ RUN source ~/.bashrc \
         curl \
         wget \
         neofetch \
+        imagemagick \
         ffmpeg \
         fortune-mod \
         figlet \
         libmagic1 \
         libzbar0 \
         iputils-ping \
-        tzdata \
     ## 安装编译依赖
     && apt-get update \
     && apt-get install --no-install-recommends -y \

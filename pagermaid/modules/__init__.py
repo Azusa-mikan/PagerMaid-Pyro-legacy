@@ -1,10 +1,10 @@
-"""PagerMaid module and plugin init."""
+""" PagerMaid module and plugin init. """
 
-from glob import glob
-from os import getcwd, makedirs, sep
 from os.path import dirname, basename, isfile, exists
-
-from pagermaid.utils import lang, logs
+from os import getcwd, makedirs, sep
+from glob import glob
+from pagermaid import logs
+from pagermaid.utils import lang
 
 
 def __list_modules():

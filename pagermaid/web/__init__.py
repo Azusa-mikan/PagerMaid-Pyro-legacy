@@ -5,8 +5,8 @@ from fastapi.responses import HTMLResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
+from pagermaid import logs
 from pagermaid.config import Config
-from pagermaid.utils import logs
 from pagermaid.web.api import base_api_router, base_html_router
 from pagermaid.web.pages import admin_app, login_page
 
@@ -78,9 +78,7 @@ class Web:
 
         self.init_web()
         self.web_server = uvicorn.Server(
-            config=uvicorn.Config(
-                self.app, host=Config.WEB_HOST, port=Config.WEB_PORT, log_config=None
-            )
+            config=uvicorn.Config(self.app, host=Config.WEB_HOST, port=Config.WEB_PORT)
         )
         server_config = self.web_server.config
         server_config.setup_event_loop()

@@ -19,6 +19,7 @@ from amis import (
     Horizontal,
 )
 
+from pagermaid.config import Config
 from pagermaid.web.html import get_logo
 
 logo = Html(html=get_logo())
@@ -41,7 +42,7 @@ log_page = Log(
     operation=["stop", "showLineNumber", "filter"],
     source={
         "method": "get",
-        "url": "/pagermaid/api/log?num=${log_num | default:100}",
+        "url": "/pagermaid/api/log?num=${log_num | raw}",
     },
 )
 

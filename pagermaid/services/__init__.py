@@ -1,17 +1,22 @@
-from pagermaid.dependence import sqlite, scheduler, client
-from ._bot import bot
+from pagermaid import bot
+from pagermaid import logs
+from pagermaid.single_utils import sqlite
+from pagermaid.scheduler import scheduler
+from pagermaid.utils import client
 
 __all__ = [
     "bot",
+    "logs",
     "sqlite",
-    "client",
     "scheduler",
+    "client",
 ]
 
 
 def get(name: str):
     data = {
         "Client": bot,
+        "Logger": logs,
         "SqliteDict": sqlite,
         "AsyncIOScheduler": scheduler,
         "AsyncClient": client,

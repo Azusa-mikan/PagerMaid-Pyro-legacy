@@ -1,22 +1,18 @@
 import asyncio
 from os import sep
-from pathlib import Path
 from signal import signal as signal_fn, SIGINT, SIGTERM, SIGABRT
 from sys import path, platform, exit
 
 from pyrogram.errors import AuthKeyUnregistered
 
+from pagermaid import bot, logs, working_dir, Config
 from pagermaid.common.reload import load_all
-from pagermaid.config import Config
-from pagermaid.dependence import scheduler
-from pagermaid.services import bot
-from pagermaid.static import working_dir
-from pagermaid.utils import lang, logs, SessionFileManager
+from pagermaid.single_utils import safe_remove
+from pagermaid.utils import lang, process_exit
 from pagermaid.web import web
 from pagermaid.web.api.web_login import web_login
 from pyromod.methods.sign_in_qrcode import start_client
 
-bot.PARENT_DIR = Path(working_dir)
 path.insert(1, f"{working_dir}{sep}plugins")
 
 
@@ -44,28 +40,27 @@ async def console_bot():
     try:
         await start_client(bot)
     except AuthKeyUnregistered:
-        SessionFileManager.safe_remove_session()
+        safe_remove("pagermaid.session")
         exit()
     me = await bot.get_me()
-    await bot.storage.user_id(me.id)
     if me.is_bot:
-        SessionFileManager.safe_remove_session()
+        safe_remove("pagermaid.session")
         exit()
     logs.info(f"{lang('save_id')} {me.first_name}({me.id})")
     await load_all()
+    await process_exit(start=True, _client=bot)
 
 
 async def web_bot():
     try:
         await web_login.init()
     except AuthKeyUnregistered:
-        SessionFileManager.safe_remove_session()
+        safe_remove("pagermaid.session")
         exit()
     if bot.me is not None:
         me = await bot.get_me()
-        await bot.storage.user_id(me.id)
         if me.is_bot:
-            SessionFileManager.safe_remove_session()
+            safe_remove("pagermaid.session")
             exit()
     else:
         logs.info("Please use web to login, path: web_login .")
@@ -73,8 +68,6 @@ async def web_bot():
 
 async def main():
     logs.info(lang("platform") + platform + lang("platform_load"))
-    if not scheduler.running:
-        scheduler.start()
     await web.start()
     if not (Config.WEB_ENABLE and Config.WEB_LOGIN):
         await console_bot()
@@ -85,8 +78,6 @@ async def main():
     try:
         await idle()
     finally:
-        if scheduler.running:
-            scheduler.shutdown()
         try:
             await bot.stop()
         except ConnectionError:
